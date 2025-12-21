@@ -11,8 +11,9 @@ This project comes packed with features designed for a robust and intelligent ag
 *   ✅ **Intelligent Context Management**: Automatically summarizes conversation history to handle contexts up to a configurable token limit, enabling infinitely long tasks.
 *   ✅ **Claude Skills Integration**: Comes with 15 professional skills for documents, design, testing, and development.
 *   ✅ **MCP Tool Integration**: Natively supports MCP for tools like knowledge graph access and web search.
+*   ✅ **ACP Support**: Native support for [Agent Client Protocol](https://agentclientprotocol.com/) for integration with ACP-compatible clients like Zed.
 *   ✅ **Comprehensive Logging**: Detailed logs for every request, response, and tool execution for easy debugging.
-*   ✅ **Clean & Simple Design**: A beautiful CLI and a codebase that is easy to understand, making it the perfect starting point for building advanced agents.
+*   ✅ **Clean & Simple Design**: A beautiful CLI and a codebase that is easy to understand, making it the perfect starting point for building 
 
 ## Table of Contents
 
@@ -31,9 +32,10 @@ This project comes packed with features designed for a robust and intelligent ag
   - [Testing](#testing)
     - [Quick Run](#quick-run)
     - [Test Coverage](#test-coverage)
-  - [Troubleshooting](#troubleshooting)
-    - [SSL Certificate Error](#ssl-certificate-error)
-    - [Module Not Found Error](#module-not-found-error)
+  - [ACP (Agent Client Protocol) Support](#acp-agent-client-protocol-support)
+    - [Features](#features)
+    - [Quick Start](#quick-start-1)
+    - [Integration with Zed](#integration-with-zed)
   - [Related Documentation](#related-documentation)
   - [Contributing](#contributing)
   - [License](#license)
@@ -45,10 +47,10 @@ This project comes packed with features designed for a robust and intelligent ag
 
 MiniMax provides both global and China platforms. Choose based on your network environment:
 
-| Version    | Platform                                                       | API Base                   |
-| ---------- | -------------------------------------------------------------- | -------------------------- |
-| **Global** | [https://platform.minimax.io](https://platform.minimax.io)     | `https://api.minimax.io`   |
-| **China**  | [https://platform.minimaxi.com](https://platform.minimaxi.com) | `https://api.minimaxi.com` |
+| Version    | Platform                                                       | API Base                             |
+| ---------- | -------------------------------------------------------------- | ------------------------------------ |
+| **Global** | [https://platform.minimax.io](https://platform.minimax.io)     | `https://api.minimax.io/anthropic`   |
+| **China**  | [https://platform.minimaxi.com](https://platform.minimaxi.com) | `https://api.minimaxi.com/anthropic` |
 
 **Steps to get API Key:**
 1. Visit the corresponding platform to register and login
@@ -60,21 +62,21 @@ MiniMax provides both global and China platforms. Choose based on your network e
 
 ### 2. Choose Your Usage Mode
 
-**Prerequisites: Install uv**
+**Prerequisites: Install pipx**
 
-Both usage modes require uv. If you don't have it installed:
+Both usage modes require pipx. If you don't have it installed:
 
 ```bash
-# macOS/Linux/WSL
-curl -LsSf https://astral.sh/uv/install.sh | sh
+# macOS
+brew install pipx
+pipx ensurepath
 
-# Windows (PowerShell)
-python -m pip install --user pipx
-python -m pipx ensurepath
-# Restart PowerShell after installation
+# Linux
+sudo apt install pipx  # Debian/Ubuntu
+pipx ensurepath
 
 # After installation, restart your terminal or run:
-source ~/.bashrc  # or ~/.zshrc (macOS/Linux)
+source ~/.bashrc  # or ~/.zshrc
 ```
 
 We offer two usage modes - choose based on your needs:
@@ -87,15 +89,10 @@ Perfect for users who want to quickly try Mini Agent without cloning the reposit
 
 ```bash
 # 1. Install directly from GitHub
-uv tool install git+https://github.com/MiniMax-AI/Mini-Agent.git
+pipx install git+https://github.com/MiniMax-AI/Mini-Agent.git
 
 # 2. Run setup script (automatically creates config files)
-# macOS/Linux:
 curl -fsSL https://raw.githubusercontent.com/MiniMax-AI/Mini-Agent/main/scripts/setup-config.sh | bash
-
-# Windows (PowerShell):
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/MiniMax-AI/Mini-Agent/main/scripts/setup-config.ps1" -OutFile "$env:TEMP\setup-config.ps1"
-powershell -ExecutionPolicy Bypass -File "$env:TEMP\setup-config.ps1"
 ```
 
 > 💡 **Tip**: If you want to develop locally or modify code, use "Development Mode" below
@@ -113,8 +110,8 @@ Fill in your API Key and corresponding API Base:
 
 ```yaml
 api_key: "YOUR_API_KEY_HERE"          # API Key from step 1
-api_base: "https://api.minimax.io"  # Global
-# api_base: "https://api.minimaxi.com"  # China
+api_base: "https://api.minimax.io/anthropic"  # Global
+# api_base: "https://api.minimaxi.com/anthropic"  # China
 model: "MiniMax-M2"
 ```
 
@@ -124,11 +121,6 @@ model: "MiniMax-M2"
 mini-agent                                    # Use current directory as workspace
 mini-agent --workspace /path/to/your/project  # Specify workspace directory
 mini-agent --version                          # Check version
-
-# Management commands
-uv tool upgrade mini-agent                    # Upgrade to latest version
-uv tool uninstall mini-agent                  # Uninstall if needed
-uv tool list                                  # View all installed tools
 ```
 
 #### 🔧 Development Mode
@@ -143,34 +135,16 @@ git clone https://github.com/MiniMax-AI/Mini-Agent.git
 cd Mini-Agent
 
 # 2. Install uv (if you haven't)
-# macOS/Linux:
 curl -LsSf https://astral.sh/uv/install.sh | sh
-# Windows (PowerShell):
-irm https://astral.sh/uv/install.ps1 | iex
-# Restart terminal after installation
 
 # 3. Sync dependencies
 uv sync
-
-# Alternative: Install dependencies manually (if not using uv)
-# pip install -r requirements.txt
-# Or install required packages:
-# pip install tiktoken pyyaml httpx pydantic requests prompt-toolkit mcp
 
 # 4. Initialize Claude Skills (Optional)
 git submodule update --init --recursive
 
 # 5. Copy config template
-```
-
-**macOS/Linux:**
-```bash
 cp mini_agent/config/config-example.yaml mini_agent/config/config.yaml
-```
-
-**Windows:**
-```powershell
-Copy-Item mini_agent\config\config-example.yaml mini_agent\config\config.yaml
 
 # 6. Edit config file
 vim mini_agent/config/config.yaml  # Or use your preferred editor
@@ -180,8 +154,8 @@ Fill in your API Key and corresponding API Base:
 
 ```yaml
 api_key: "YOUR_API_KEY_HERE"          # API Key from step 1
-api_base: "https://api.minimax.io"  # Global
-# api_base: "https://api.minimaxi.com"  # China
+api_base: "https://api.minimax.io/anthropic"  # Global
+# api_base: "https://api.minimaxi.com/anthropic"  # China
 model: "MiniMax-M2"
 max_steps: 100
 workspace_dir: "./workspace"
@@ -198,7 +172,7 @@ Choose your preferred run method:
 uv run python -m mini_agent.cli
 
 # Method 2: Install in editable mode (recommended)
-uv tool install -e .
+pipx install -e .
 # After installation, run from anywhere and code changes take effect immediately
 mini-agent
 mini-agent --workspace /path/to/your/project
@@ -280,33 +254,24 @@ pytest tests/test_agent.py tests/test_note_tool.py -v
 - ✅ **External Services** - Git MCP Server loading
 
 
-## Troubleshooting
+## ACP (Agent Client Protocol) Support
 
-### SSL Certificate Error
+Mini-Agent supports the [Agent Client Protocol](https://agentclientprotocol.com/) for integration with ACP-compatible clients like Zed.
 
-If you encounter `[SSL: CERTIFICATE_VERIFY_FAILED]` error:
-
-**Quick fix for testing** (modify `mini_agent/llm.py`):
-```python
-# Line 50: Add verify=False to AsyncClient
-async with httpx.AsyncClient(timeout=120.0, verify=False) as client:
-```
-
-**Production solution**:
+**Quick Start:**
 ```bash
-# Update certificates
-pip install --upgrade certifi
-
-# Or configure system proxy/certificates
+# Run as ACP server
+mini-agent-acp
 ```
 
-### Module Not Found Error
-
-Make sure you're running from the project directory:
-```bash
-cd Mini-Agent
-python -m mini_agent.cli
+**Zed Integration:**
+```json
+{
+  "agents": [{"name": "mini-agent", "command": "mini-agent-acp"}]
+}
 ```
+
+Features: Multiple concurrent sessions, real-time streaming, tool execution with progress tracking, and MiniMax thinking blocks.
 
 ## Related Documentation
 
