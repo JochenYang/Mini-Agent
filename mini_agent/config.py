@@ -23,8 +23,9 @@ class LLMConfig(BaseModel):
     """LLM configuration"""
 
     api_key: str
-    api_base: str = "https://api.minimax.io/anthropic"
-    model: str = "MiniMax-M2"
+    api_base: str = "https://api.minimax.io"
+    model: str = "MiniMax-M2.1"
+    provider: str = "anthropic"  # "anthropic" or "openai"
     retry: RetryConfig = Field(default_factory=RetryConfig)
 
 
@@ -34,6 +35,14 @@ class AgentConfig(BaseModel):
     max_steps: int = 50
     workspace_dir: str = "./workspace"
     system_prompt_path: str = "system_prompt.md"
+
+
+class MCPConfig(BaseModel):
+    """MCP (Model Context Protocol) timeout configuration"""
+
+    connect_timeout: float = 10.0  # Connection timeout (seconds)
+    execute_timeout: float = 60.0  # Tool execution timeout (seconds)
+    sse_read_timeout: float = 120.0  # SSE read timeout (seconds)
 
 
 class ToolsConfig(BaseModel):
@@ -51,6 +60,7 @@ class ToolsConfig(BaseModel):
     # MCP tools
     enable_mcp: bool = True
     mcp_config_path: str = "mcp.json"
+    mcp: MCPConfig = Field(default_factory=MCPConfig)
 
 
 class Config(BaseModel):
@@ -62,6 +72,7 @@ class Config(BaseModel):
 
     @classmethod
     def load(cls) -> "Config":
+<<<<<<< HEAD
         """Load configuration using default search locations.
 
         Returns:
@@ -125,8 +136,9 @@ class Config(BaseModel):
 
         llm_config = LLMConfig(
             api_key=data["api_key"],
-            api_base=data.get("api_base", "https://api.minimax.io/anthropic"),
-            model=data.get("model", "MiniMax-M2"),
+            api_base=data.get("api_base", "https://api.minimax.io"),
+            model=data.get("model", "MiniMax-M2.1"),
+            provider=data.get("provider", "anthropic"),
             retry=retry_config,
         )
 
@@ -139,6 +151,15 @@ class Config(BaseModel):
 
         # Parse tools configuration
         tools_data = data.get("tools", {})
+
+        # Parse MCP configuration
+        mcp_data = tools_data.get("mcp", {})
+        mcp_config = MCPConfig(
+            connect_timeout=mcp_data.get("connect_timeout", 10.0),
+            execute_timeout=mcp_data.get("execute_timeout", 60.0),
+            sse_read_timeout=mcp_data.get("sse_read_timeout", 120.0),
+        )
+
         tools_config = ToolsConfig(
             enable_file_tools=tools_data.get("enable_file_tools", True),
             enable_bash=tools_data.get("enable_bash", True),
@@ -147,6 +168,7 @@ class Config(BaseModel):
             skills_dir=tools_data.get("skills_dir", "./skills"),
             enable_mcp=tools_data.get("enable_mcp", True),
             mcp_config_path=tools_data.get("mcp_config_path", "mcp.json"),
+            mcp=mcp_config,
         )
 
         return cls(

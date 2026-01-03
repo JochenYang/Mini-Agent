@@ -2,7 +2,7 @@
 
 English | [中文](./README_CN.md)
 
-**Mini Agent** is a minimal yet professional demo project that showcases the best practices for building agents with the MiniMax M2 model. Leveraging an Anthropic-compatible API, it fully supports interleaved thinking to unlock M2's powerful reasoning capabilities for long, complex tasks.
+**Mini Agent** is a minimal yet professional demo project that showcases the best practices for building agents with the MiniMax M2.1 model. Leveraging an Anthropic-compatible API, it fully supports interleaved thinking to unlock M2's powerful reasoning capabilities for long, complex tasks.
 
 This project comes packed with features designed for a robust and intelligent agent development experience:
 
@@ -110,9 +110,9 @@ Fill in your API Key and corresponding API Base:
 
 ```yaml
 api_key: "YOUR_API_KEY_HERE"          # API Key from step 1
-api_base: "https://api.minimax.io/anthropic"  # Global
-# api_base: "https://api.minimaxi.com/anthropic"  # China
-model: "MiniMax-M2"
+api_base: "https://api.minimax.io"  # Global
+# api_base: "https://api.minimaxi.com"  # China
+model: "MiniMax-M2.1"
 ```
 
 **Start Using:**
@@ -154,9 +154,9 @@ Fill in your API Key and corresponding API Base:
 
 ```yaml
 api_key: "YOUR_API_KEY_HERE"          # API Key from step 1
-api_base: "https://api.minimax.io/anthropic"  # Global
-# api_base: "https://api.minimaxi.com/anthropic"  # China
-model: "MiniMax-M2"
+api_base: "https://api.minimax.io"  # Global
+# api_base: "https://api.minimaxi.com"  # China
+model: "MiniMax-M2.1"
 max_steps: 100
 workspace_dir: "./workspace"
 ```
