@@ -72,7 +72,6 @@ class Config(BaseModel):
 
     @classmethod
     def load(cls) -> "Config":
-<<<<<<< HEAD
         """Load configuration using default search locations.
 
         Returns:
